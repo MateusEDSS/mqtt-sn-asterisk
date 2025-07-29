@@ -1,0 +1,18 @@
+FROM python:3.9-slim
+
+WORKDIR /app
+
+# Instalar dependências
+RUN pip install paho-mqtt asterisk-ami
+
+# Copiar código
+COPY mqtt_sn_server.py .
+COPY requirements.txt .
+
+# Instalar dependências Python
+RUN pip install -r requirements.txt
+
+# Expor porta MQTT-SN
+EXPOSE 1885/udp
+
+CMD ["python", "mqtt_sn_server.py"]

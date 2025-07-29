@@ -1,0 +1,41 @@
+services:
+  asterisk:
+ #  image: mlan/asterisk
+    build:
+      context: .
+      dockerfile: Dockerfile.asterisk
+    container_name: asterisk
+    ports:
+      - "5060:5060/udp"  # SIP
+      - "15038:5038"     # AMI
+    # Temporariamente sem volume personalizado para testar
+    volumes:
+      - ./asterisk-config:/etc/asterisk
+    networks:
+      - mqtt-asterisk-net
+    restart: unless-stopped
+    
+
+  mqtt-sn-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.mqttsn
+    container_name: mqtt-sn-server
+    ports:
+      - "1885:1885/udp"
+    environment:
+      - ASTERISK_HOST=asterisk
+      - ASTERISK_AMI_PORT=5038
+      - ASTERISK_AMI_USER=admin
+      - ASTERISK_AMI_SECRET=senha123
+      - ALERT_PHONE=1000
+      - TEMP_THRESHOLD=80
+    depends_on:
+      - asterisk
+    networks:
+      - mqtt-asterisk-net
+    restart: unless-stopped
+
+networks:
+  mqtt-asterisk-net:
+    driver: bridge

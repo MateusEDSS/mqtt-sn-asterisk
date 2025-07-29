@@ -1,0 +1,2 @@
+paho-mqtt==1.6.1
+asterisk-ami==0.1.5

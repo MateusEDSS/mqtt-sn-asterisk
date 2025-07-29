@@ -1,0 +1,22 @@
+FROM ubuntu:18.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Instalar versão mais antiga e estável
+RUN apt-get update && \
+    apt-get install -y asterisk && \
+    rm -rf /var/lib/apt/lists/*
+
+# Limpar módulos problemáticos
+RUN find /usr/lib/asterisk/modules -name "*stasis*" -delete && \
+    find /usr/lib/asterisk/modules -name "*ari*" -delete && \
+    find /usr/lib/asterisk/modules -name "*websocket*" -delete
+
+# Diretórios
+RUN mkdir -p /var/run/asterisk /var/log/asterisk /var/lib/asterisk
+
+# Expor portas
+EXPOSE 5038 5060/udp
+
+# Iniciar
+CMD ["asterisk", "-f", "-vvv"]
