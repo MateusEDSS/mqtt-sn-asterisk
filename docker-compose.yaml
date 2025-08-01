@@ -10,7 +10,10 @@ services:
       - "15038:5038"     # AMI
     # Temporariamente sem volume personalizado para testar
     volumes:
-      - ./asterisk-config:/etc/asterisk
+      - ./asterisk-config/sip.conf:/etc/asterisk/sip.conf
+      - ./asterisk-config/manager.conf:/etc/asterisk/manager.conf
+      - ./asterisk-config/extensions.conf:/etc/asterisk/extensions.conf
+      - ./sounds:/usr/share/asterisk/sounds/custom/
     networks:
       - mqtt-asterisk-net
     restart: unless-stopped
@@ -28,7 +31,7 @@ services:
       - ASTERISK_AMI_PORT=5038
       - ASTERISK_AMI_USER=admin
       - ASTERISK_AMI_SECRET=senha123
-      - ALERT_PHONE=1000
+      - ALERT_PHONE=1000,2000
       - TEMP_THRESHOLD=80
     depends_on:
       - asterisk
